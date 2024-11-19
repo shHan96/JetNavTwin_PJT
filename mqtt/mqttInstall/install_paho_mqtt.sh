@@ -32,10 +32,10 @@ if [ -d "paho.mqtt.cpp" ]; then
 fi
 git clone https://github.com/eclipse/paho.mqtt.cpp.git
 cd paho.mqtt.cpp
-git checkout v1.4.0
+git checkout v1.4.1
 git submodule init
 git submodule update
-cmake -Bbuild -H. -DPAHO_WITH_MQTT_C=ON -DPAHO_BUILD_EXAMPLES=ON
+cmake -Bbuild -H. -DPAHO_BUILD_EXAMPLES=ON
 sudo env "PATH=$PATH" cmake --build build/ --target install
 cd ..
 

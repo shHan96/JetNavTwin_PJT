@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/testPub/main.cpp
+iostream
+-
+cstring
+-
+mqtt/async_client.h
+-
+

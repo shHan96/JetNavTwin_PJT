@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
-project(paho_cxx_pub)
+project(paho_jetbot)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
 # Paho MQTT C++ 라이브러리 찾기
 find_package(PahoMqttCpp QUIET)
@@ -32,15 +33,23 @@ else()
     message(STATUS "PahoMqttCpp package found.")
 endif()
 
+
+
 # 실행 파일 및 소스
-set(SOURCES main.cpp)
+set(SOURCES 
+    main.cpp
+)
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # 라이브러리 연결
-target_include_directories(${PROJECT_NAME} PRIVATE ${PAHO_MQTT_CPP_INCLUDE_PATH})
+target_include_directories(${PROJECT_NAME} PRIVATE ${PAHO_MQTT_CPP_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR})
+
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
     target_link_directories(${PROJECT_NAME} PRIVATE ${PAHO_MQTT_CPP_LIB_PATH})
+    target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR})
 else()
     link_directories(${PAHO_MQTT_CPP_LIB_PATH})
 endif()
+
 target_link_libraries(${PROJECT_NAME} paho-mqttpp3 paho-mqtt3as)

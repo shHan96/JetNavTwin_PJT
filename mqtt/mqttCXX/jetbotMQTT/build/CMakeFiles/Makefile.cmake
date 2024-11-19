@@ -128,5 +128,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/paho_cxx_pub.dir/DependInfo.cmake"
+  "CMakeFiles/paho_jetbot.dir/DependInfo.cmake"
   )

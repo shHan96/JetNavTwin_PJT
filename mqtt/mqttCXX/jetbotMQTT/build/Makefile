@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/testPub
+CMAKE_SOURCE_DIR = /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/testPub/build
+CMAKE_BINARY_DIR = /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/testPub/build/CMakeFiles /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/testPub/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/build/CMakeFiles /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/testPub/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named paho_cxx_pub
+# Target rules for targets named paho_jetbot
 
 # Build rule for target.
-paho_cxx_pub: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 paho_cxx_pub
-.PHONY : paho_cxx_pub
+paho_jetbot: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 paho_jetbot
+.PHONY : paho_jetbot
 
 # fast build rule for target.
-paho_cxx_pub/fast:
-	$(MAKE) -f CMakeFiles/paho_cxx_pub.dir/build.make CMakeFiles/paho_cxx_pub.dir/build
-.PHONY : paho_cxx_pub/fast
+paho_jetbot/fast:
+	$(MAKE) -f CMakeFiles/paho_jetbot.dir/build.make CMakeFiles/paho_jetbot.dir/build
+.PHONY : paho_jetbot/fast
 
 main.o: main.cpp.o
 
@@ -129,7 +129,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/paho_cxx_pub.dir/build.make CMakeFiles/paho_cxx_pub.dir/main.cpp.o
+	$(MAKE) -f CMakeFiles/paho_jetbot.dir/build.make CMakeFiles/paho_jetbot.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -138,7 +138,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/paho_cxx_pub.dir/build.make CMakeFiles/paho_cxx_pub.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles/paho_jetbot.dir/build.make CMakeFiles/paho_jetbot.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -147,7 +147,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/paho_cxx_pub.dir/build.make CMakeFiles/paho_cxx_pub.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles/paho_jetbot.dir/build.make CMakeFiles/paho_jetbot.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -157,7 +157,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... paho_cxx_pub"
+	@echo "... paho_jetbot"
 	@echo "... edit_cache"
 	@echo "... main.o"
 	@echo "... main.i"
