@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/paho_cxx_sub.dir/main.cpp.o -o paho_cxx_sub  -lpaho-mqttpp3 -lpaho-mqtt3as 

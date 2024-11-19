@@ -1,0 +1,3 @@
+/home/pi/mqtt/mqttCXX/testSub/build/CMakeFiles/paho_cxx_sub.dir
+/home/pi/mqtt/mqttCXX/testSub/build/CMakeFiles/edit_cache.dir
+/home/pi/mqtt/mqttCXX/testSub/build/CMakeFiles/rebuild_cache.dir
