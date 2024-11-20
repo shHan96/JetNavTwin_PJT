@@ -26,6 +26,10 @@ set(OpenCV_LIBS
     opencv_videoio
 )
 
+# Paho MQTT C++ 라이브러리 수동 설정 (find_package 대신)
+set(PAHO_MQTT_CPP_INCLUDE_DIR "/usr/local/include")
+set(PAHO_MQTT_CPP_LIB "/usr/local/lib/libpaho-mqttpp3.so")
+
 # Include 디렉토리 설정
 include_directories(
     ${TORCH_PATH}/include
