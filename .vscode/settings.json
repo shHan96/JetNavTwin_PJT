@@ -1,0 +1,8 @@
+{
+    "cmake.configureSettings": {
+        "CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/cmake/jetson-toolchain.cmake"
+    },
+    "cmake.generator": "Unix Makefiles",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "C_Cpp.default.compilerPath": "/usr/bin/aarch64-linux-gnu-g++"
+}
