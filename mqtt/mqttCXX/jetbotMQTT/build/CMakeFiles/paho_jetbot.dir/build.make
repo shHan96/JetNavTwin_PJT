@@ -57,38 +57,38 @@ include CMakeFiles/paho_jetbot.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/paho_jetbot.dir/flags.make
 
-CMakeFiles/paho_jetbot.dir/main.cpp.o: CMakeFiles/paho_jetbot.dir/flags.make
-CMakeFiles/paho_jetbot.dir/main.cpp.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/paho_jetbot.dir/main.cpp.o"
-	/usr/bin/aarch64-linux-gnu-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/paho_jetbot.dir/main.cpp.o -c /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/main.cpp
+CMakeFiles/paho_jetbot.dir/src/main.cpp.o: CMakeFiles/paho_jetbot.dir/flags.make
+CMakeFiles/paho_jetbot.dir/src/main.cpp.o: ../src/main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/paho_jetbot.dir/src/main.cpp.o"
+	/usr/bin/aarch64-linux-gnu-g++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/paho_jetbot.dir/src/main.cpp.o -c /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/src/main.cpp
 
-CMakeFiles/paho_jetbot.dir/main.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/paho_jetbot.dir/main.cpp.i"
-	/usr/bin/aarch64-linux-gnu-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/main.cpp > CMakeFiles/paho_jetbot.dir/main.cpp.i
+CMakeFiles/paho_jetbot.dir/src/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/paho_jetbot.dir/src/main.cpp.i"
+	/usr/bin/aarch64-linux-gnu-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/src/main.cpp > CMakeFiles/paho_jetbot.dir/src/main.cpp.i
 
-CMakeFiles/paho_jetbot.dir/main.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/paho_jetbot.dir/main.cpp.s"
-	/usr/bin/aarch64-linux-gnu-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/main.cpp -o CMakeFiles/paho_jetbot.dir/main.cpp.s
+CMakeFiles/paho_jetbot.dir/src/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/paho_jetbot.dir/src/main.cpp.s"
+	/usr/bin/aarch64-linux-gnu-g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/src/main.cpp -o CMakeFiles/paho_jetbot.dir/src/main.cpp.s
 
-CMakeFiles/paho_jetbot.dir/main.cpp.o.requires:
+CMakeFiles/paho_jetbot.dir/src/main.cpp.o.requires:
 
-.PHONY : CMakeFiles/paho_jetbot.dir/main.cpp.o.requires
+.PHONY : CMakeFiles/paho_jetbot.dir/src/main.cpp.o.requires
 
-CMakeFiles/paho_jetbot.dir/main.cpp.o.provides: CMakeFiles/paho_jetbot.dir/main.cpp.o.requires
-	$(MAKE) -f CMakeFiles/paho_jetbot.dir/build.make CMakeFiles/paho_jetbot.dir/main.cpp.o.provides.build
-.PHONY : CMakeFiles/paho_jetbot.dir/main.cpp.o.provides
+CMakeFiles/paho_jetbot.dir/src/main.cpp.o.provides: CMakeFiles/paho_jetbot.dir/src/main.cpp.o.requires
+	$(MAKE) -f CMakeFiles/paho_jetbot.dir/build.make CMakeFiles/paho_jetbot.dir/src/main.cpp.o.provides.build
+.PHONY : CMakeFiles/paho_jetbot.dir/src/main.cpp.o.provides
 
-CMakeFiles/paho_jetbot.dir/main.cpp.o.provides.build: CMakeFiles/paho_jetbot.dir/main.cpp.o
+CMakeFiles/paho_jetbot.dir/src/main.cpp.o.provides.build: CMakeFiles/paho_jetbot.dir/src/main.cpp.o
 
 
 # Object files for target paho_jetbot
 paho_jetbot_OBJECTS = \
-"CMakeFiles/paho_jetbot.dir/main.cpp.o"
+"CMakeFiles/paho_jetbot.dir/src/main.cpp.o"
 
 # External object files for target paho_jetbot
 paho_jetbot_EXTERNAL_OBJECTS =
 
-paho_jetbot: CMakeFiles/paho_jetbot.dir/main.cpp.o
+paho_jetbot: CMakeFiles/paho_jetbot.dir/src/main.cpp.o
 paho_jetbot: CMakeFiles/paho_jetbot.dir/build.make
 paho_jetbot: CMakeFiles/paho_jetbot.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/jetbot/mqtt/ssafy_PJT_Jetbot/mqtt/mqttCXX/jetbotMQTT/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable paho_jetbot"
@@ -99,7 +99,7 @@ CMakeFiles/paho_jetbot.dir/build: paho_jetbot
 
 .PHONY : CMakeFiles/paho_jetbot.dir/build
 
-CMakeFiles/paho_jetbot.dir/requires: CMakeFiles/paho_jetbot.dir/main.cpp.o.requires
+CMakeFiles/paho_jetbot.dir/requires: CMakeFiles/paho_jetbot.dir/src/main.cpp.o.requires
 
 .PHONY : CMakeFiles/paho_jetbot.dir/requires
 

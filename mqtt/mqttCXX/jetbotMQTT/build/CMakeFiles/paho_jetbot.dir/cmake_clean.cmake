@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/paho_jetbot.dir/main.cpp.o"
+  "CMakeFiles/paho_jetbot.dir/src/main.cpp.o"
   "paho_jetbot.pdb"
   "paho_jetbot"
 )

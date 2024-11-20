@@ -1,1 +1,1 @@
-/usr/bin/aarch64-linux-gnu-g++     CMakeFiles/paho_jetbot.dir/main.cpp.o  -o paho_jetbot -lpaho-mqttpp3 -lpaho-mqtt3as 
+/usr/bin/aarch64-linux-gnu-g++  -g   CMakeFiles/paho_jetbot.dir/src/main.cpp.o  -o paho_jetbot -lpaho-mqttpp3 -lpaho-mqtt3as 

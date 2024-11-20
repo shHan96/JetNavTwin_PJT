@@ -37,17 +37,17 @@ endif()
 
 # 실행 파일 및 소스
 set(SOURCES 
-    main.cpp
+    src/main.cpp
 )
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # 라이브러리 연결
 target_include_directories(${PROJECT_NAME} PRIVATE ${PAHO_MQTT_CPP_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.13")
     target_link_directories(${PROJECT_NAME} PRIVATE ${PAHO_MQTT_CPP_LIB_PATH})
-    target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR})
+    target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/include)
 else()
     link_directories(${PAHO_MQTT_CPP_LIB_PATH})
 endif()
