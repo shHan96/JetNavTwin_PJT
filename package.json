@@ -6,13 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server.js"
   },
   "dependencies": {
     "pinia": "^2.2.6",
     "three": "^0.170.0",
     "vue": "^3.5.12",
-    "vue-router": "^4.4.5"
+    "vue-router": "^4.4.5",
+    "express": "^4.18.2",
+    "vite": "^5.4.10"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.1.4",
