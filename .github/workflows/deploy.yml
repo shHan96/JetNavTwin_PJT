@@ -1,0 +1,38 @@
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build project
+      run: npm run build
+
+    - name: Create SSH key file
+      run: echo "${{ secrets.AWS_EC2_KEY }}" > key.pem
+
+    - name: Set permissions for SSH key file
+      run: chmod 600 key.pem
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.AWS_EC2_HOST }}
+        username: ${{ secrets.AWS_EC2_USER }}
+        key: key.pem
+        port: 22
+        script: |
+          cd ~/AGV-WebUI
+          git pull origin main
+          npm install
+          npm run build
+          pm2 restart all
