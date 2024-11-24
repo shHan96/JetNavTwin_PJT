@@ -1,20 +1,22 @@
-// server.js
 import express from 'express';
-import { createServer } from 'vite';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
-const port = 80; // HTTP 포트
+const port = 80;
 
-// Vite 미들웨어 설정
-const vite = await createServer({
-  server: { middlewareMode: 'ssr' }
-});
-app.use(vite.middlewares);
+// Serve static files from the dist directory
+app.use(express.static(path.join(__dirname, 'dist')));
 
-// 기본 라우트 설정
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+// Handle SPA routing - send all requests to index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server running on http://localhost:${port}`);
+});
