@@ -4,7 +4,8 @@ import { dirname } from 'path';
 import path from 'path';
 import { WebSocketServer } from 'ws';
 
-// In server.js, modify the message handling
+const wss = new WebSocketServer({ port: 8080 }); // Move this up
+
 wss.on('connection', (ws) => {
   console.log('New client connected');
 
@@ -29,8 +30,6 @@ wss.on('connection', (ws) => {
   });
 });
 
-const wss = new WebSocketServer({ port: 8080 });
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -40,7 +39,6 @@ const port = 80;
 // Serve static files from the dist directory
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Handle SPA routing - send all requests to index.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
