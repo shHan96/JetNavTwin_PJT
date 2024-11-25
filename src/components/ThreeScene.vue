@@ -382,8 +382,8 @@ const updateTracks = () => {
                     child.position.z += isTopLink ? speed : -speed
 
                     // Reset link position when it reaches the end
-                    if (child.position.z > 1) child.position.z = -0.1
-                    if (child.position.z < -1) child.position.z = 0.1
+                    if (child.position.z > 1) child.position.z = -1
+                    if (child.position.z < -1) child.position.z = 1
                 }
             }
         })
