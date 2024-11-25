@@ -26,6 +26,10 @@ const axies = [new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), new THREE
 let scene, camera, renderer, controls
 let models = {}
 
+// Add WebSocket variables
+let ws = null
+const isConnected = ref(false)
+
 const loadModel = (path, material) => {
     return new Promise((resolve, reject) => {
         const loader = new OBJLoader()
@@ -268,7 +272,7 @@ const connectWebSocket = () => {
         return
     }
 
-    const wsUrl = `ws://3.35.149.221/ws:80`
+    const wsUrl = `ws://${window.location.host}`
     ws = new WebSocket(wsUrl)
     
     ws.onopen = () => {
