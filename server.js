@@ -13,12 +13,21 @@ const app = express();
 const server = createServer(app);
 const port = 3000;
 
-// Create WebSocket server without path restriction
-const wss = new WebSocketServer({ server });
+// Add upgrade handling
+server.on('upgrade', (request, socket, head) => {
+  console.log('Upgrade request received:', request.url);
+});
 
-// WebSocket handlers
-wss.on('connection', (ws) => {
-  console.log('Client connected');
+// Create WebSocket server
+const wss = new WebSocketServer({ 
+  server,
+  handleProtocols: () => 'websocket' // Force websocket protocol
+});
+
+// WebSocket handlers with debug logging
+wss.on('connection', (ws, req) => {
+  console.log('Client connected from:', req.socket.remoteAddress);
+  console.log('Connection headers:', req.headers);
 
   ws.on('message', (message) => {
     try {
@@ -49,4 +58,5 @@ app.get('*', (req, res) => {
 
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
+  console.log('WebSocket server ready');
 });
