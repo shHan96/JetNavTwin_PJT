@@ -249,6 +249,10 @@ const loadModels = async () => {
         models.joint1.add(models.joint5)
         models.joint5.position.set(0, -0.0065, 0.030)
 
+        jointRotations.value.forEach((_, index) => {
+                            updateJointRotation(index)
+                        })
+
         // Initial position for joint1
     } catch (error) {
         console.error('Error loading models:', error)
