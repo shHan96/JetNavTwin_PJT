@@ -270,7 +270,8 @@ const updateJointRotation = (jointIndex) => {
 
 onMounted(async () => {
     // Initialize WebSocket connection
-  ws = new WebSocket('ws://localhost:8080')
+    const wsUrl = `ws://${window.location.hostname}:3000`
+    ws = new WebSocket(wsUrl)
   
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data)
@@ -283,6 +284,7 @@ onMounted(async () => {
       }
     }
   }
+
 
     initScene()
     initTracks()
@@ -341,7 +343,7 @@ onBeforeUnmount(() => {
     if (ws) {
     ws.close()
   }
-  
+
     window.removeEventListener('resize', handleResize)
     if (animationId) {
         cancelAnimationFrame(animationId)
