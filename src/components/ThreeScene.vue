@@ -29,6 +29,10 @@ let models = {}
 // Add WebSocket variables
 let ws = null
 const isConnected = ref(false)
+const PING_INTERVAL = 30000 // 30 seconds
+const RECONNECT_DELAY = 5000 // 5 seconds
+let pingTimeout = null
+let reconnectTimeout = null
 
 const loadModel = (path, material) => {
     return new Promise((resolve, reject) => {
@@ -275,9 +279,28 @@ const connectWebSocket = () => {
     const wsUrl = `ws://${window.location.host}`
     ws = new WebSocket(wsUrl)
     
+    const heartbeat = () => {
+        clearTimeout(pingTimeout)
+        pingTimeout = setTimeout(() => {
+            ws.close()
+        }, PING_INTERVAL + 5000)
+    }
+    
     ws.onopen = () => {
         console.log('WebSocket connected')
         isConnected.value = true
+        heartbeat()
+    }
+    
+    ws.onclose = () => {
+        console.log('WebSocket disconnected')
+        isConnected.value = false
+        clearTimeout(pingTimeout)
+        
+        // Reconnection logic
+        reconnectTimeout = setTimeout(() => {
+            connectWebSocket()
+        }, RECONNECT_DELAY)
     }
     
     ws.onerror = (error) => {
@@ -285,25 +308,28 @@ const connectWebSocket = () => {
         isConnected.value = false
     }
 
-    ws.onclose = () => {
-        console.log('WebSocket disconnected')
-        isConnected.value = false
-    }
-
     ws.onmessage = (event) => {
-        const data = JSON.parse(event.data)
-        if (data.type === 'control') {
-            if (data.jointRotations) {
-                jointRotations.value = data.jointRotations
-                jointRotations.value.forEach((_, index) => {
-                updateJointRotation(index)
-            })
+        heartbeat()
+        
+        try {
+            const data = JSON.parse(event.data)
+            if (data.type === 'control') {
+                // Batch updates to reduce rendering overhead
+                if (data.jointRotations) {
+                    jointRotations.value = data.jointRotations
+                    requestAnimationFrame(() => {
+                        jointRotations.value.forEach((_, index) => {
+                            updateJointRotation(index)
+                        })
+                    })
+                }
+                if (data.trackSpeeds) {
+                    trackSpeeds.value = data.trackSpeeds
+                }
             }
-            if (data.trackSpeeds) {
-                trackSpeeds.value = data.trackSpeeds
-            }
+        } catch (error) {
+            console.error('Message parsing error:', error)
         }
-        console.log('Received:', data)
     }
 }
 
@@ -362,9 +388,9 @@ const handleResize = () => {
 }
 
 onBeforeUnmount(() => {
-    if (ws) {
-    ws.close()
-  }
+    if (ws) ws.close()
+    clearTimeout(pingTimeout)
+    clearTimeout(reconnectTimeout)
 
     window.removeEventListener('resize', handleResize)
     if (animationId) {
