@@ -366,22 +366,22 @@ onMounted(async () => {
     window.addEventListener('resize', handleResize)
 })
 
+
 const updateTracks = () => {
     tracks.forEach((track, index) => {
+        const speed = trackSpeeds.value[index] * 0.01 // Scale down the speed for smoother movement
+        
         track.traverse((child) => {
             if (child instanceof THREE.Mesh) {
-                // Get speed based on left/right pair
-                const speed = trackSpeeds.value[index < 2 ? 0 : 1]
-                
-                // Link movement
-                const isTopLink = child.position.y > 0
-                child.position.z += isTopLink ? speed : -speed
-
-                // Reset link position
-                if (isTopLink) {
-                    if (child.position.z > 1) child.position.z = -1
-                    if (child.position.z < -1) child.position.z = 1
+                if (child.geometry instanceof THREE.CylinderGeometry) {
+                    // Rotate the wheels
+                    child.rotation.y += speed
                 } else {
+                    // Move the track links
+                    const isTopLink = child.position.y > 0
+                    child.position.z += isTopLink ? speed : -speed
+
+                    // Reset link position when it reaches the end
                     if (child.position.z > 1) child.position.z = -1
                     if (child.position.z < -1) child.position.z = 1
                 }
