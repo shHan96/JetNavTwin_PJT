@@ -57,10 +57,12 @@ export const useWebSocketStore = defineStore('websocket', () => {
         // Update robot control data
         if (data.jointRotations) {
           jointRotations.value = data.jointRotations
+          console.log('Joint rotations:', jointRotations.value)
           window.dispatchEvent(new CustomEvent('jointUpdate'))
         }
         if (data.trackSpeeds) {
           trackSpeeds.value = data.trackSpeeds
+          console.log('trackSpeeds:',trackSpeeds.value)
           window.dispatchEvent(new CustomEvent('trackUpdate'))
         }
       }

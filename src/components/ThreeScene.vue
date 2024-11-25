@@ -290,8 +290,7 @@ onMounted(async () => {
 })
 
 
-const updateTracks = () => {
-    console.log("updateTracks!")    
+const updateTracks = () => {   
     tracks.forEach((track, index) => {
         const speed = trackSpeeds.value[index] * trackSpeedScaler // Scale down the speed for smoother movement
         
