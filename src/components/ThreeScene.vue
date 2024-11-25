@@ -434,4 +434,17 @@ onBeforeUnmount(() => {
 .track-control input[type="range"] {
     width: 150px;
 }
+
+.controls button {
+    padding: 8px 16px;
+    margin: 10px;
+    border-radius: 4px;
+    background: #333;
+    color: white;
+    cursor: pointer;
+}
+
+.controls button.connected {
+    background: #4CAF50;
+}
 </style>
