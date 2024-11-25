@@ -2,6 +2,12 @@
     <div class="scene-container">
         <div ref="container" class="three-scene"></div>
         <div class="controls">
+            <button 
+                @click="connectWebSocket" 
+                :class="{'connected': isConnected}"
+            >
+                {{ isConnected ? 'Connected' : 'Connect WebSocket' }}
+            </button>
             <div v-for="i in 5" :key="i" class="joint-control">
                 <label>Joint {{ i }}</label>
                 <input type="range" min="-180" max="180" v-model="jointRotations[i - 1]"
@@ -268,19 +274,27 @@ const updateJointRotation = (jointIndex) => {
     }
 }
 
-onMounted(async () => {
-    // Initialize WebSocket connection
-    // Use same port as web page
-    const wsUrl = `ws://3.35.149.221/ws`
-    console.log(wsUrl)
+const connectWebSocket = () => {
+    if (ws?.readyState === WebSocket.OPEN) {
+        return
+    }
+
+    const wsUrl = `ws://3.35.149.221/ws:80`
     ws = new WebSocket(wsUrl)
     
     ws.onopen = () => {
         console.log('WebSocket connected')
+        isConnected.value = true
     }
     
     ws.onerror = (error) => {
         console.error('WebSocket error:', error)
+        isConnected.value = false
+    }
+
+    ws.onclose = () => {
+        console.log('WebSocket disconnected')
+        isConnected.value = false
     }
 
     ws.onmessage = (event) => {
@@ -288,7 +302,6 @@ onMounted(async () => {
         if (data.type === 'control') {
             if (data.jointRotations) {
                 jointRotations.value = data.jointRotations
-                updateJointRotation(1)
             }
             if (data.trackSpeeds) {
                 trackSpeeds.value = data.trackSpeeds
@@ -296,8 +309,9 @@ onMounted(async () => {
         }
         console.log('Received:', data)
     }
+}
 
-
+onMounted(async () => {
     initScene()
     initTracks()
     await loadModels()
