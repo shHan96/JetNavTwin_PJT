@@ -13,31 +13,23 @@
 </template>
 
 <script setup>
+import { useWebSocketStore } from '@/stores/websocket'
+const store = useWebSocketStore()
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 
 const container = ref(null)
-const trackSpeeds = ref([0, 0]) // 2개 트랙의 속도값
 const trackSpeedScaler = 0.05 // 속도값 스케일러
 let tracks = [] // 트랙 객체 저장 배열
-const jointRotations = ref([0, 20, 90, 0, 0]) // 5개 joint rotation 값
 const axies = [new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(1, 0, 0)]
 let scene, camera, renderer, controls
 let models = {}
 
-// Add queue system
-const messageQueue = []
-let isProcessing = false
-
-// Add WebSocket variables
-let ws = null
-const isConnected = ref(false)
-const PING_INTERVAL = 30000 // 30 seconds
-const RECONNECT_DELAY = 5000 // 5 seconds
-let pingTimeout = null
-let reconnectTimeout = null
+// Use store values
+const { isConnected, jointRotations, trackSpeeds } = storeToRefs(store)
+const { connectWebSocket } = store
 
 const loadModel = (path, material) => {
     return new Promise((resolve, reject) => {
@@ -278,91 +270,6 @@ const updateJointRotation = (jointIndex) => {
             joint.setRotationFromQuaternion(quaternion)
         }
     }
-}
-
-const connectWebSocket = () => {
-    if (ws?.readyState === WebSocket.OPEN) {
-        return
-    }
-
-    const wsUrl = `ws://${window.location.host}`
-    ws = new WebSocket(wsUrl)
-    
-    const heartbeat = () => {
-        clearTimeout(pingTimeout)
-        pingTimeout = setTimeout(() => {
-            ws.close()
-        }, PING_INTERVAL + 5000)
-    }
-    
-    ws.onopen = () => {
-        console.log('WebSocket connected')
-        isConnected.value = true
-        heartbeat()
-    }
-    
-    ws.onclose = () => {
-        console.log('WebSocket disconnected')
-        isConnected.value = false
-        clearTimeout(pingTimeout)
-        
-        // Reconnection logic
-        reconnectTimeout = setTimeout(() => {
-            connectWebSocket()
-        }, RECONNECT_DELAY)
-    }
-    
-    ws.onerror = (error) => {
-        console.error('WebSocket error:', error)
-        isConnected.value = false
-    }
-
-    // Modify WebSocket message handler
-ws.onmessage = (event) => {
-    heartbeat()
-    try {
-        const data = JSON.parse(event.data)
-        messageQueue.push(data)
-        processQueue()
-    } catch (error) {
-        console.error('Message parsing error:', error)
-    }
-}
-}
-
-// Process queue with delay
-const processQueue = async () => {
-    if (isProcessing || messageQueue.length === 0) return
-    
-    isProcessing = true
-    while (messageQueue.length > 0) {
-        const data = messageQueue.shift()
-        
-        if (data.type === 'control') {
-            if (data.jointRotations) {
-                jointRotations.value = data.jointRotations
-                // 데이터 전처리
-                jointRotations.value[0] = -jointRotations.value[0];
-                jointRotations.value[1] = 20 + jointRotations.value[1];
-                jointRotations.value[2] = 90 - jointRotations.value[2]
-                
-                jointRotations.value[3] = 20 - ((jointRotations.value[3] + 75) * 40 / 75)
-                await new Promise(resolve => {
-                    requestAnimationFrame(() => {
-                        jointRotations.value.forEach((_, index) => {
-                            updateJointRotation(index)
-                        })
-                        resolve()
-                    })
-                })
-            }
-            if (data.trackSpeeds) {
-                trackSpeeds.value = data.trackSpeeds
-                await new Promise(resolve => setTimeout(resolve, 16)) // ~60fps
-            }
-        }
-    }
-    isProcessing = false
 }
 
 onMounted(async () => {
