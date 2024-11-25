@@ -32,7 +32,7 @@ wss.on('connection', (ws, req) => {
   ws.on('message', (message) => {
     try {
       const data = JSON.parse(message);
-      console.log('Received:', data);
+      // console.log('Received:', data);
       
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {

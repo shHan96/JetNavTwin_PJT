@@ -283,6 +283,7 @@ onMounted(async () => {
         trackSpeeds.value = data.trackSpeeds
       }
     }
+    console.log('Received:', data)
   }
 
 
