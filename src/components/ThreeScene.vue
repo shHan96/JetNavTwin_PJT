@@ -338,6 +338,7 @@ const processQueue = async () => {
             if (data.jointRotations) {
                 jointRotations.value = data.jointRotations
                 // 데이터 전처리
+                jointRotations.value[0] = -jointRotations.value[0];
                 jointRotations.value[1] = 20 + jointRotations.value[1];
                 jointRotations.value[2] = 90 - jointRotations.value[2]
                 
@@ -377,11 +378,11 @@ const updateTracks = () => {
             if (child instanceof THREE.Mesh) {
                 if (child.geometry instanceof THREE.CylinderGeometry) {
                     // Rotate the wheels
-                    child.rotation.x += speed
+                    child.rotation.x -= speed
                 } else {
                     // Move the track links
                     const isTopLink = child.position.y > 0
-                    child.position.z += isTopLink ? speed : -speed
+                    child.position.z += isTopLink ? -speed : speed
 
                     // Reset link position when it reaches the end
                     if (child.position.z > 1) child.position.z = -1
