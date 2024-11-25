@@ -13,7 +13,15 @@ const app = express();
 const server = createServer(app);
 const port = 3000;
 
-// WebSocket Server
+// WebSocket specific upgrade handling
+app.use('/ws', (req, res, next) => {
+  if (req.headers.upgrade && req.headers.upgrade.toLowerCase() === 'websocket') {
+    next();
+  } else {
+    res.status(400).send('Expected WebSocket connection');
+  }
+});
+
 const wss = new WebSocketServer({ 
   server,
   path: '/ws'
