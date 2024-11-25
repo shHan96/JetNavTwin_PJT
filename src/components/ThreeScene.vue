@@ -281,6 +281,7 @@ onMounted(async () => {
     animate()
     window.addEventListener('resize', handleResize)
     window.addEventListener('jointUpdate', () => {
+        console.log("jointUpdate!")
     jointRotations.value.forEach((_, index) => {
       updateJointRotation(index)
     })
@@ -290,6 +291,7 @@ onMounted(async () => {
 
 
 const updateTracks = () => {
+    console.log("updateTracks!")    
     tracks.forEach((track, index) => {
         const speed = trackSpeeds.value[index] * trackSpeedScaler // Scale down the speed for smoother movement
         
