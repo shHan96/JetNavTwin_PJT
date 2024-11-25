@@ -369,7 +369,7 @@ onMounted(async () => {
 
 const updateTracks = () => {
     tracks.forEach((track, index) => {
-        const speed = trackSpeeds.value[index] * 0.01 // Scale down the speed for smoother movement
+        const speed = trackSpeeds.value[index] * 0.1 // Scale down the speed for smoother movement
         
         track.traverse((child) => {
             if (child instanceof THREE.Mesh) {
