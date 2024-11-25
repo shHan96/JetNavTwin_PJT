@@ -295,6 +295,9 @@ const connectWebSocket = () => {
         if (data.type === 'control') {
             if (data.jointRotations) {
                 jointRotations.value = data.jointRotations
+                forEach((_, index) => {
+                    updateJointRotation(index)
+                })
             }
             if (data.trackSpeeds) {
                 trackSpeeds.value = data.trackSpeeds
