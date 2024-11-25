@@ -270,21 +270,30 @@ const updateJointRotation = (jointIndex) => {
 
 onMounted(async () => {
     // Initialize WebSocket connection
-    const wsUrl = `ws://${window.location.hostname}:3000`
+// Use same port as web page
+const wsUrl = `ws://${window.location.host}`
     ws = new WebSocket(wsUrl)
-  
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data)
-    if (data.type === 'control') {
-      if (data.jointRotations) {
-        jointRotations.value = data.jointRotations
-      }
-      if (data.trackSpeeds) {
-        trackSpeeds.value = data.trackSpeeds
-      }
+    
+    ws.onopen = () => {
+        console.log('WebSocket connected')
     }
-    console.log('Received:', data)
-  }
+    
+    ws.onerror = (error) => {
+        console.error('WebSocket error:', error)
+    }
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data)
+        if (data.type === 'control') {
+            if (data.jointRotations) {
+                jointRotations.value = data.jointRotations
+            }
+            if (data.trackSpeeds) {
+                trackSpeeds.value = data.trackSpeeds
+            }
+        }
+        console.log('Received:', data)
+    }
 
 
     initScene()
