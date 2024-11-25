@@ -288,6 +288,7 @@ onMounted(async () => {
         if (data.type === 'control') {
             if (data.jointRotations) {
                 jointRotations.value = data.jointRotations
+                updateJointRotation(1)
             }
             if (data.trackSpeeds) {
                 trackSpeeds.value = data.trackSpeeds
