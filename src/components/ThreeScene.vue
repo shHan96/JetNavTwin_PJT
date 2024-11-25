@@ -280,6 +280,12 @@ onMounted(async () => {
     await loadModels()
     animate()
     window.addEventListener('resize', handleResize)
+    window.addEventListener('jointUpdate', () => {
+    jointRotations.value.forEach((_, index) => {
+      updateJointRotation(index)
+    })
+  })
+  window.addEventListener('trackUpdate', updateTracks)
 })
 
 
