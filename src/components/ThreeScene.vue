@@ -375,15 +375,15 @@ const updateTracks = () => {
             if (child instanceof THREE.Mesh) {
                 if (child.geometry instanceof THREE.CylinderGeometry) {
                     // Rotate the wheels
-                    child.rotation.y += speed
+                    child.rotation.x += speed
                 } else {
                     // Move the track links
                     const isTopLink = child.position.y > 0
                     child.position.z += isTopLink ? speed : -speed
 
                     // Reset link position when it reaches the end
-                    if (child.position.z > 1) child.position.z = -1
-                    if (child.position.z < -1) child.position.z = 1
+                    if (child.position.z > 1) child.position.z = -0.1
+                    if (child.position.z < -1) child.position.z = 0.1
                 }
             }
         })
