@@ -19,12 +19,16 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 
 const container = ref(null)
-const trackSpeeds = ref([0, 0, 0, 0]) // 4개 트랙의 속도값
+const trackSpeeds = ref([0, 0]) // 2개 트랙의 속도값
 let tracks = [] // 트랙 객체 저장 배열
 const jointRotations = ref([0, 0, 0, 0, 0]) // 5개 joint rotation 값
 const axies = [new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(1, 0, 0)]
 let scene, camera, renderer, controls
 let models = {}
+
+// Add queue system
+const messageQueue = []
+let isProcessing = false
 
 // Add WebSocket variables
 let ws = null
@@ -308,29 +312,46 @@ const connectWebSocket = () => {
         isConnected.value = false
     }
 
-    ws.onmessage = (event) => {
-        heartbeat()
+    // Modify WebSocket message handler
+ws.onmessage = (event) => {
+    heartbeat()
+    try {
+        const data = JSON.parse(event.data)
+        messageQueue.push(data)
+        processQueue()
+    } catch (error) {
+        console.error('Message parsing error:', error)
+    }
+}
+}
+
+// Process queue with delay
+const processQueue = async () => {
+    if (isProcessing || messageQueue.length === 0) return
+    
+    isProcessing = true
+    while (messageQueue.length > 0) {
+        const data = messageQueue.shift()
         
-        try {
-            const data = JSON.parse(event.data)
-            if (data.type === 'control') {
-                // Batch updates to reduce rendering overhead
-                if (data.jointRotations) {
-                    jointRotations.value = data.jointRotations
+        if (data.type === 'control') {
+            if (data.jointRotations) {
+                jointRotations.value = data.jointRotations
+                await new Promise(resolve => {
                     requestAnimationFrame(() => {
                         jointRotations.value.forEach((_, index) => {
                             updateJointRotation(index)
                         })
+                        resolve()
                     })
-                }
-                if (data.trackSpeeds) {
-                    trackSpeeds.value = data.trackSpeeds
-                }
+                })
             }
-        } catch (error) {
-            console.error('Message parsing error:', error)
+            if (data.trackSpeeds) {
+                trackSpeeds.value = data.trackSpeeds
+                await new Promise(resolve => setTimeout(resolve, 16)) // ~60fps
+            }
         }
     }
+    isProcessing = false
 }
 
 onMounted(async () => {
@@ -341,35 +362,33 @@ onMounted(async () => {
     window.addEventListener('resize', handleResize)
 })
 
-const animate = () => {
-    requestAnimationFrame(animate)
-
-    // Left and right tracks update
-    tracks.forEach((trackGroup, index) => {
-        const speed = trackSpeeds.value[index] * 0.1
-        trackGroup.children.forEach(child => {
+const updateTracks = () => {
+    tracks.forEach((track, index) => {
+        track.traverse((child) => {
             if (child instanceof THREE.Mesh) {
-                if (child.geometry instanceof THREE.CylinderGeometry) {
-                    // Wheel rotation
-                    child.rotation.x += speed
-                } else if (child.geometry instanceof THREE.BoxGeometry) {
-                    // Link movement - 상단/하단 구분하여 이동
-                    const isTopLink = child.position.y > 0
-                    child.position.z += isTopLink ? speed : -speed
+                // Get speed based on left/right pair
+                const speed = trackSpeeds.value[index < 2 ? 0 : 1]
+                
+                // Link movement
+                const isTopLink = child.position.y > 0
+                child.position.z += isTopLink ? speed : -speed
 
-                    // Reset link position when it reaches the end
-                    if (isTopLink) {
-                        if (child.position.z > 1) child.position.z = -1
-                        if (child.position.z < -1) child.position.z = 1
-                    } else {
-                        if (child.position.z > 1) child.position.z = -1
-                        if (child.position.z < -1) child.position.z = 1
-                    }
+                // Reset link position
+                if (isTopLink) {
+                    if (child.position.z > 1) child.position.z = -1
+                    if (child.position.z < -1) child.position.z = 1
+                } else {
+                    if (child.position.z > 1) child.position.z = -1
+                    if (child.position.z < -1) child.position.z = 1
                 }
             }
         })
     })
+}
 
+const animate = () => {
+    requestAnimationFrame(animate)
+    updateTracks()
     if (controls) controls.update() // Add this line
     renderer.render(scene, camera)
 }
