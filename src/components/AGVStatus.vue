@@ -41,25 +41,34 @@
   <style scoped>
   .status-container {
     padding: 20px;
-    color: #333;
+    color: var(--text-primary);
+    background: var(--surface-dark);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
   }
   
   .status-item {
     margin-bottom: 30px;
+    padding: 15px;
+    border: 1px solid var(--primary-300);
+    border-radius: var(--radius-sm);
+    background: rgba(97, 218, 251, 0.1);
   }
   
   .battery-indicator {
-    background: #ddd;
+    background: var(--bg-darker);
     height: 20px;
-    border-radius: 10px;
+    border-radius: var(--radius-full);
     position: relative;
     overflow: hidden;
+    border: 1px solid var(--primary-300);
   }
   
   .battery-level {
-    background: #4CAF50;
+    background: var(--primary-300);
     height: 100%;
     transition: width 0.3s ease;
+    box-shadow: 0 0 10px var(--primary-300);
   }
   
   .wifi-indicator {
@@ -71,8 +80,9 @@
   
   .signal-bar {
     width: 6px;
-    background: #ddd;
+    background: var(--bg-darker);
     border-radius: 2px;
+    transition: background-color 0.3s ease;
   }
   
   .signal-bar:nth-child(1) { height: 25%; }
@@ -81,18 +91,22 @@
   .signal-bar:nth-child(4) { height: 100%; }
   
   .signal-bar.active {
-    background: #2196F3;
+    background: var(--primary-300);
+    box-shadow: 0 0 10px var(--primary-300);
   }
   
   .status-badge {
     display: inline-block;
     padding: 6px 12px;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     font-weight: bold;
+    border: 1px solid var(--primary-300);
+    background: var(--surface-dark);
   }
   
   .status-badge.running {
-    background: #4CAF50;
-    color: white;
+    background: var(--accent-green);
+    color: var(--text-primary);
+    box-shadow: 0 0 10px var(--accent-green);
   }
   </style>

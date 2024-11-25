@@ -23,15 +23,16 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 const container = ref(null)
 const store = useWebSocketStore()
 
-const trackSpeedScaler = 0.05 // 속도값 스케일러
-let tracks = [] // 트랙 객체 저장 배열
-const axies = [new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(1, 0, 0)]
+let animationId = null
 let scene, camera, renderer, controls
+const trackSpeedScaler = 0.05
+const axies = [new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(1, 0, 0)]
+let tracks = []
 let models = {}
 
 // Use store values
 const { isConnected, jointRotations, trackSpeeds } = storeToRefs(store)
-const { connectWebSocket } = store
+const { connectWebSocket, disconnect } = store // disconnect 추가
 
 const loadModel = (path, material) => {
     return new Promise((resolve, reject) => {
@@ -215,6 +216,12 @@ const loadModels = async () => {
         roughness: 0.4
     })
 
+    const ssafyMaterial = new THREE.MeshStandardMaterial({
+        color: "#00C3FF",
+        metalness: 0.3,
+        roughness: 0.4
+    })
+
     try {
         // Load models sequentially
         models.body = await loadModel('/models/body.obj', bodyMaterial)
@@ -225,6 +232,7 @@ const loadModels = async () => {
         models.gripper2 = await loadModel('/models/gripper2.obj', gripperMaterial)
         models.gripper3 = await loadModel('/models/gripper3.obj', gripperMaterial)
         models.joint5 = await loadModel('/models/joint5.obj', cameraMaterial)
+        models.ssafy = await loadModel('/models/SSAFY.obj', ssafyMaterial)
 
         // Set up hierarchy
         models.body.rotation.x = -Math.PI / 2
@@ -242,6 +250,7 @@ const loadModels = async () => {
         models.gripper1.add(models.gripper3)
         models.joint1.add(models.joint5)
         models.joint5.position.set(0, -0.0065, 0.030)
+        models.body.add(models.ssafy)
 
         jointRotations.value.forEach((_, index) => {
                             updateJointRotation(index)
@@ -251,6 +260,12 @@ const loadModels = async () => {
     } catch (error) {
         console.error('Error loading models:', error)
     }
+}
+
+const handleJointUpdate = () => {
+    jointRotations.value.forEach((_, index) => {
+        updateJointRotation(index)
+    })
 }
 
 const updateJointRotation = (jointIndex) => {
@@ -274,19 +289,15 @@ const updateJointRotation = (jointIndex) => {
     }
 }
 
+// Modify onMounted
 onMounted(async () => {
     initScene()
     initTracks()
     await loadModels()
     animate()
     window.addEventListener('resize', handleResize)
-    window.addEventListener('jointUpdate', () => {
-        console.log("jointUpdate!")
-    jointRotations.value.forEach((_, index) => {
-      updateJointRotation(index)
-    })
-  })
-  window.addEventListener('trackUpdate', updateTracks)
+    window.addEventListener('jointUpdate', handleJointUpdate) // Add event listener
+    window.addEventListener('trackUpdate', updateTracks)
 })
 
 
@@ -314,9 +325,9 @@ const updateTracks = () => {
 }
 
 const animate = () => {
-    requestAnimationFrame(animate)
+    animationId = requestAnimationFrame(animate) // Store the ID
     updateTracks()
-    if (controls) controls.update() // Add this line
+    if (controls) controls.update()
     renderer.render(scene, camera)
 }
 
@@ -334,11 +345,11 @@ const handleResize = () => {
 }
 
 onBeforeUnmount(() => {
-    if (ws) ws.close()
-    clearTimeout(pingTimeout)
-    clearTimeout(reconnectTimeout)
-
+    disconnect() // 직접 ws를 참조하는 대신 store의 disconnect 메서드 사용
     window.removeEventListener('resize', handleResize)
+    window.removeEventListener('jointUpdate', handleJointUpdate)
+    window.removeEventListener('trackUpdate', updateTracks)
+    
     if (animationId) {
         cancelAnimationFrame(animationId)
     }
@@ -352,68 +363,106 @@ onBeforeUnmount(() => {
 
 </script>
 
+<!-- ThreeScene.vue -->
 <style scoped>
 .scene-container {
-    position: relative;
-    width: 100%;
-    height: 100%;
+  position: relative;
+  width: 95%;
+  height: 95%;
+  margin: 20px;
+  background: var(--surface-dark);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--primary-300);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
 }
 
 .three-scene {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
 }
 
 .controls {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.7);
-    padding: 15px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.joint-control input[type="range"] {
-    width: 200px;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(32, 35, 42, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--primary-300);
+  padding: 15px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .track-controls {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.7);
-    padding: 15px;
-    border-radius: 8px;
-    color: white;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(32, 35, 42, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--primary-300);
+  padding: 15px;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
 }
-
-.track-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 5px 0;
-}
-
-.track-control input[type="range"] {
-    width: 150px;
-}
-
 
 .controls button {
-    padding: 8px 16px;
-    margin: 10px;
-    border-radius: 4px;
-    background: #333;
-    color: white;
-    cursor: pointer;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--surface-dark);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border: 1px solid var(--primary-300);
+}
+
+.controls button:hover {
+  background: var(--primary-300);
+  color: var(--surface-dark);
+  box-shadow: 0 0 15px var(--primary-300);
 }
 
 .controls button.connected {
-    background: #4CAF50;
+  background: var(--accent-green);
+  color: var(--surface-dark);
+  box-shadow: 0 0 15px var(--accent-green);
+}
+
+.track-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 5px 0;
+}
+
+.track-control input[type="range"] {
+  width: 150px;
+  -webkit-appearance: none;
+  background: var(--surface-light);
+  border-radius: var(--radius-sm);
+  height: 6px;
+}
+
+.track-control input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary-300);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.track-control input[type="range"]::-webkit-slider-thumb:hover {
+  background: var(--primary-500);
+  box-shadow: 0 0 10px var(--primary-300);
 }
 </style>
