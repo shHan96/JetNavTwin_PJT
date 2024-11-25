@@ -14,13 +14,15 @@
 
 <script setup>
 import { useWebSocketStore } from '@/stores/websocket'
-const store = useWebSocketStore()
+import { storeToRefs } from 'pinia'
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 
 const container = ref(null)
+const store = useWebSocketStore()
+
 const trackSpeedScaler = 0.05 // 속도값 스케일러
 let tracks = [] // 트랙 객체 저장 배열
 const axies = [new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(1, 0, 0)]

@@ -32,10 +32,10 @@
   <script setup>
   import { ref } from 'vue'
   import { useWebSocketStore } from '@/stores/websocket'
-import { storeToRefs } from 'pinia'
+  import { storeToRefs } from 'pinia'
 
-const store = useWebSocketStore()
-const { batteryLevel, wifiStrength, operationStatus } = storeToRefs(store)
+  const store = useWebSocketStore()
+  const { batteryLevel, wifiStrength, operationStatus } = storeToRefs(store)
   </script>
   
   <style scoped>
