@@ -8,17 +8,6 @@
             >
                 {{ isConnected ? 'Connected' : 'Connect WebSocket' }}
             </button>
-            <div v-for="i in 5" :key="i" class="joint-control">
-                <label>Joint {{ i }}</label>
-                <input type="range" min="-180" max="180" v-model="jointRotations[i - 1]"
-                    @input="() => updateJointRotation(i - 1)" />
-                <span>{{ jointRotations[i - 1] }}°</span>
-            </div>
-            <div v-for="i in 4" :key="i" class="track-control">
-                <label>Track {{ i }} Speed</label>
-                <input type="range" min="-1" max="1" step="0.1" v-model="trackSpeeds[i - 1]" />
-                <span>{{ trackSpeeds[i - 1] }}</span>
-            </div>
         </div>
     </div>
 </template>
@@ -434,6 +423,7 @@ onBeforeUnmount(() => {
 .track-control input[type="range"] {
     width: 150px;
 }
+
 
 .controls button {
     padding: 8px 16px;
