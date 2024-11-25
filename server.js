@@ -4,7 +4,10 @@ import { dirname } from 'path';
 import path from 'path';
 import { WebSocketServer } from 'ws';
 
-const wss = new WebSocketServer({ port: 8080 }); // Move this up
+const wss = new WebSocketServer({ 
+  port: 8080,
+  host: '0.0.0.0'  // 모든 인터페이스에서 접근 허용
+ }); // Move this up
 
 wss.on('connection', (ws) => {
   console.log('New client connected');
