@@ -21,7 +21,7 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 const container = ref(null)
 const trackSpeeds = ref([0, 0]) // 2개 트랙의 속도값
 let tracks = [] // 트랙 객체 저장 배열
-const jointRotations = ref([0, 0, 0, 0, 0]) // 5개 joint rotation 값
+const jointRotations = ref([0, 20, 90, 0, 0]) // 5개 joint rotation 값
 const axies = [new THREE.Vector3(0, 0, 1), new THREE.Vector3(1, 0, 0), new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0), new THREE.Vector3(1, 0, 0)]
 let scene, camera, renderer, controls
 let models = {}
@@ -336,6 +336,10 @@ const processQueue = async () => {
         if (data.type === 'control') {
             if (data.jointRotations) {
                 jointRotations.value = data.jointRotations
+                // 데이터 전처리
+                jointRotations.value[1] = 20 + jointRotations.value[1];
+                jointRotations.value[2] = 90 - jointRotations.value[2]
+                jointRotations.value[3] = -20 + ((jointRotations.value[3] + 75) * 40 / 75)
                 await new Promise(resolve => {
                     requestAnimationFrame(() => {
                         jointRotations.value.forEach((_, index) => {
