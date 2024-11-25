@@ -269,6 +269,21 @@ const updateJointRotation = (jointIndex) => {
 }
 
 onMounted(async () => {
+    // Initialize WebSocket connection
+  ws = new WebSocket('ws://localhost:8080')
+  
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data)
+    if (data.type === 'control') {
+      if (data.jointRotations) {
+        jointRotations.value = data.jointRotations
+      }
+      if (data.trackSpeeds) {
+        trackSpeeds.value = data.trackSpeeds
+      }
+    }
+  }
+
     initScene()
     initTracks()
     await loadModels()
@@ -323,6 +338,10 @@ const handleResize = () => {
 }
 
 onBeforeUnmount(() => {
+    if (ws) {
+    ws.close()
+  }
+  
     window.removeEventListener('resize', handleResize)
     if (animationId) {
         cancelAnimationFrame(animationId)
