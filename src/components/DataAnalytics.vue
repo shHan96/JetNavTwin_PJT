@@ -247,6 +247,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
 .analytics-container {
     position: relative;
     display: flex;
