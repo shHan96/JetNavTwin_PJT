@@ -271,7 +271,8 @@ const updateJointRotation = (jointIndex) => {
 onMounted(async () => {
     // Initialize WebSocket connection
 // Use same port as web page
-const wsUrl = `ws://${window.location.host}`
+const wsUrl = `ws://${window.location.host}/ws`
+console.log(wsUrl)
     ws = new WebSocket(wsUrl)
     
     ws.onopen = () => {
