@@ -13,35 +13,18 @@ const app = express();
 const server = createServer(app);
 const port = 3000;
 
-// WebSocket specific upgrade handling
-app.use('/ws', (req, res, next) => {
-  if (req.headers.upgrade && req.headers.upgrade.toLowerCase() === 'websocket') {
-    next();
-  } else {
-    res.status(400).send('Expected WebSocket connection');
-  }
-});
-
-const wss = new WebSocketServer({ 
-  server,
-  path: '/ws'
-});
+// Create WebSocket server without path restriction
+const wss = new WebSocketServer({ server });
 
 // WebSocket handlers
-wss.on('connection', (ws, req) => {
-  console.log(`WebSocket client connected from ${req.socket.remoteAddress}`);
-
-  ws.isAlive = true;
-  ws.on('pong', () => {
-    ws.isAlive = true;
-  });
+wss.on('connection', (ws) => {
+  console.log('Client connected');
 
   ws.on('message', (message) => {
     try {
       const data = JSON.parse(message);
       console.log('Received:', data);
       
-      // Broadcast to all connected clients
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify(data));
@@ -52,23 +35,9 @@ wss.on('connection', (ws, req) => {
     }
   });
 
-  ws.on('error', (error) => {
-    console.error('WebSocket error:', error);
+  ws.on('close', () => {
+    console.log('Client disconnected');
   });
-});
-
-// Heartbeat check
-const interval = setInterval(() => {
-  wss.clients.forEach((ws) => {
-    if (ws.isAlive === false) return ws.terminate();
-    ws.isAlive = false;
-    ws.ping();
-  });
-}, 30000);
-
-// Cleanup on server close
-server.on('close', () => {
-  clearInterval(interval);
 });
 
 // Static files
@@ -80,5 +49,4 @@ app.get('*', (req, res) => {
 
 server.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
-  console.log(`WebSocket server ready at ws://localhost:${port}/ws`);
 });
