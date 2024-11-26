@@ -1,23 +1,23 @@
 <template>
   <div class="monitor-container">
     <header class="tech-header">
-    <div class="header-content">
+      <div class="header-content">
         <div class="header-bg"></div>
         <h1 class="title">
-            <span class="text-gradient">SSAFY AGV</span>
-            <span class="subtitle">WEB GUI</span>
+          <span class="text-gradient">SSAFY AGV</span>
+          <span class="subtitle">WEB GUI</span>
         </h1>
         <nav class="header-nav">
-            <router-link to="/" class="nav-link">Monitor</router-link>
-            <router-link to="/analytics" class="nav-link">Analytics</router-link>
+          <router-link to="/" class="nav-link">Monitor</router-link>
+          <router-link to="/analytics" class="nav-link">Analytics</router-link>
         </nav>
         <div class="scan-line"></div>
         <div class="corner top-left"></div>
         <div class="corner top-right"></div>
         <div class="corner bottom-left"></div>
         <div class="corner bottom-right"></div>
-    </div>
-</header>
+      </div>
+    </header>
     <div class="monitor-panel three-panel">
       <ThreeScene />
     </div>
@@ -29,6 +29,9 @@
         <DataAnalytics />
       </div>
     </div>
+    <footer class="footer">
+      <p>SSAFY 12th AGB Team [팀장: 한상훈, 팀원: 윤여범]</p>
+    </footer>
   </div>
 </template>
 
@@ -74,6 +77,8 @@ import DataAnalytics from '../components/DataAnalytics.vue'
   padding: 0;
   overflow: hidden;
   background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+  padding-top: calc(60px + 2rem);
+  padding-bottom: 4rem; /* footer 높이만큼 패딩 추가 */
 }
 
 .monitor-panel {
@@ -207,6 +212,17 @@ import DataAnalytics from '../components/DataAnalytics.vue'
   border-top: none;
 }
 
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  padding: 1rem;
+  background: var(--surface-dark);
+  color: var(--text-primary);
+  border-top: 1px solid var(--primary-300);
+}
+
 @keyframes scan {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
@@ -217,8 +233,4 @@ import DataAnalytics from '../components/DataAnalytics.vue'
   50% { opacity: 0.8; }
 }
 
-/* Update existing monitor-container to account for header */
-.monitor-container {
-  padding-top: calc(60px + 2rem);
-}
 </style>
