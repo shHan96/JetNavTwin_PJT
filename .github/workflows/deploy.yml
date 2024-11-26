@@ -1,45 +1,51 @@
-name: Deploy to EC2
-
+name: Build and Deploy
 on:
   push:
+    branches: [ main ]
+
+  pull_request:
     branches:
       - main
+    types: [opened, synchronize, reopened]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18'
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'npm'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Build project
-      run: npm run build
+      - name: Build
+        run: npm run build
+        env:
+          NODE_OPTIONS: "--max-old-space-size=4096"
 
-    - name: Create SSH key file
-      run: echo "${{ secrets.AWS_EC2_KEY }}" > key.pem
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AWS_EC2_KEY }}" > ~/.ssh/key.pem
+          chmod 600 ~/.ssh/key.pem
+          ssh-keyscan -H ${{ secrets.AWS_EC2_HOST }} >> ~/.ssh/known_hosts
 
-    - name: Set permissions for SSH key file
-      run: chmod 600 key.pem
-
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@v0.1.5
-      with:
-        host: ${{ secrets.AWS_EC2_HOST }}
-        username: ${{ secrets.AWS_EC2_USER }}
-        key: key.pem
-        port: 22
-        script: |
-          cd ~/AGV-WebUI
-          git pull origin main
-          npm install
-          npm run build
-          pm2 restart all
+      - name: Deploy to EC2
+        run: |
+          # 서버 파일과 빌드된 파일을 전송
+          scp -i ~/.ssh/key.pem -r dist/* ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}:/home/${{ secrets.AWS_EC2_USER }}/app/dist
+          scp -i ~/.ssh/key.pem package*.json server.js ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }}:/home/${{ secrets.AWS_EC2_USER }}/app/
+          
+          # EC2에서 서버 재시작
+          ssh -i ~/.ssh/key.pem ${{ secrets.AWS_EC2_USER }}@${{ secrets.AWS_EC2_HOST }} '
+            cd ~/app
+            npm install --production
+            pm2 restart server || pm2 start server.js --name "server"
+          '
