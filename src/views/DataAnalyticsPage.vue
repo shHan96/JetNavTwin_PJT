@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import DataAnalytics from '@/components/DataAnalytics.vue'
 import { parseTimestamp } from '@/utils/dateUtils'
 
