@@ -139,6 +139,13 @@ function setupChartListener() {
   return unsubscribe; // 리스너 해제 함수 반환
 }
 
+const drawChart = async () => {
+    if (analytics.value) {
+        const initialData = await analytics.value.fetchData()
+        setInitialDateRange(initialData)
+    }
+}
+
 onMounted(async () => {
     if (analytics.value) {
         const initialData = await analytics.value.fetchData()
