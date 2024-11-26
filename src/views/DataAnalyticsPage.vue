@@ -143,6 +143,8 @@ const drawChart = async () => {
     if (analytics.value) {
         const initialData = await analytics.value.fetchData()
         setInitialDateRange(initialData)
+        
+        await nextTick()
         updateCharts(initialData)
     }
 }
