@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import DataAnalytics from '@/components/DataAnalytics.vue'
 import { parseTimestamp } from '@/utils/dateUtils'
 
@@ -49,7 +49,7 @@ const startDate = ref('')
 const endDate = ref('')
 const timeUnit = ref('60') 
 const analytics = ref(null)
-
+const unsubscribe = null;
 
 const setInitialDateRange = (data) => {
     if (data && data.labels && data.labels.length > 0) {
@@ -121,11 +121,34 @@ const resampleData = (data, timeUnitSeconds) => {
     return resampledData
 }
 
+// 컬렉션 변경사항을 감지하고 차트를 업데이트하는 리스너
+function setupChartListener() {
+  const collectionRef = db.collection('sensingTable'); // 원하는 컬렉션명으로 변경하세요
+  
+  const unsubscribe = collectionRef.onSnapshot((snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === 'added') {
+        // 데이터 추가 시 차트 업데이트
+        drawChart();
+      }
+    });
+  }, (error) => {
+    console.error('리스너 에러:', error);
+  });
+
+  return unsubscribe; // 리스너 해제 함수 반환
+}
+
 onMounted(async () => {
     if (analytics.value) {
         const initialData = await analytics.value.fetchData()
         setInitialDateRange(initialData)
     }
+    unsubscribe = setupChartListener();
+})
+
+onUnmounted(async () => {
+    unsubscribe();
 })
 
 const applyChanges = async () => {
