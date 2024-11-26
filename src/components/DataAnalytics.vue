@@ -154,6 +154,7 @@ const createChartOptions = (yAxisLabel, maxY = undefined) => ({
     }
 })
 
+
 const fetchData = async () => {
     try {
         loading.value = true
@@ -163,13 +164,21 @@ const fetchData = async () => {
         const snapshot = await getDocs(sensingRef)
 
         const documents = []
+
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        
         snapshot.forEach(doc => {
             if (doc.id.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/)) {
-                documents.push({
-                    timestamp: parseTimestamp(doc.id),
+                const currentTimeStamp = parseTimestamp(doc.id);
+                if (currentTimeStamp >= today) {
+                    documents.push({
+                    timestamp: currentTimeStamp,
                     id: doc.id,
                     data: doc.data()
                 })
+                }
+
             }
         })
 
@@ -222,7 +231,7 @@ defineExpose({
     updateCharts,
 })
 
-onMounted(async () => {
+const drawChart = async () => {
     try {
         const data = await fetchData()
         if (data.labels.length > 0) {
@@ -239,6 +248,10 @@ onMounted(async () => {
     } catch (err) {
         console.error('Chart creation failed:', err)
     }
+}
+
+onMounted(async () => {
+    await drawChart();
 })
 
 onUnmounted(() => {
