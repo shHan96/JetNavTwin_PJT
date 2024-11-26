@@ -101,14 +101,7 @@ private:
             servos.setServoSpeed(servo_num, std::abs(current_speed));
             int16_t target_angle = (current_speed > 0) ? 80 : -80;
             servos.setServoAngle(servo_num, target_angle);
-                        std::vector<int16_t> servo_angles = {
-                    servos.getServoData(1).current_angle,
-                    servos.getServoData(2).current_angle,
-                    servos.getServoData(3).current_angle,
-                    servos.getServoData(4).current_angle,
-                    servos.getServoData(5).current_angle,
-                };
-            mqtt_.publishServoData(servo_angles);
+                        
         } else {
             servos.setServoSpeed(servo_num, 0);
             // Get current position and maintain it
@@ -170,7 +163,14 @@ private:
         if (is_pressed) {  // 버튼이 눌렸을 때만 로그
             mqtt_.publishLog(MQTTController::LogType::COMMAND, 
                            "Joystick button: " + button_name);
-
+            std::vector<int16_t> servo_angles = {
+                    servos.getServoData(1).current_angle,
+                    servos.getServoData(2).current_angle,
+                    servos.getServoData(3).current_angle,
+                    servos.getServoData(4).current_angle,
+                    servos.getServoData(5).current_angle,
+                };
+            mqtt_.publishServoData(servo_angles);
         }
     }
 
