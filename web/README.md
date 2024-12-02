@@ -28,6 +28,6 @@ npm run dev
 npm run build
 ```
 
-### Demo Iamge
+### Demo Image
 
 <img src="./twin_model.png" width="250" /><img src="./web_chart.png" width="300" /><br/>
