@@ -11,7 +11,7 @@ cuda 10.0
 opencv 4.1.1
 ```
 ### MQTT Jetson Nano
-```
+```bash
 git clone https://github.com/eclipse/paho.mqtt.c.git
 cd paho.mqtt.c
 git checkout v1.3.13
@@ -24,11 +24,13 @@ git checkout 922e866f4ff4c02f8d488f1426f806cbed603e5d
 cmake -Bbuild -H. -DPAHO_BUILD_EXAMPLES=ON
 sudo cmake --build build/ --target install
 ```
-./include/system_controller.h line 13 </br>
-SystemController(const std::string& broker_address = "tcp://192.168.164.137:1883") </br>
-IPADDRESS modify </br>
-### CrossCompiler
 ```
+./include/system_controller.h line 13 
+SystemController(const std::string& broker_address = "tcp://192.168.164.137:1883") 
+IPADDRESS modify
+```
+### CrossCompiler
+```bash
 sudo apt update
 sudo apt install gcc-8-aarch64-linux-gnu g++-8-aarch64-linux-gnu
 sudo apt install cmake
@@ -36,7 +38,7 @@ sudo apt install cmake
 
 
 ### Compile
-```
+```bash
 mkdir build
 mv ./best_steering_model_xy_test.pt ./build/best_steering_model_xy_test.pt
 cd build
@@ -46,7 +48,7 @@ make
 ```
 
 ### RUN
-```
+```bash
 ./exefile
 # exefile과 best_steering_model_xy_test.pt같은 폴더 내에 있어야한다.
 # torch와 cuda의 동적라이브러리의 위치가 맞아야한다.
