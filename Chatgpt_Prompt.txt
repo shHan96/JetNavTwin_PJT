@@ -1,0 +1,46 @@
+Analyze the log data from the Jetank AGV implemented on a Jetson Nano board and summarize it in 3 sentences or less.
+
+The Jetank AGV follows these steps:
+1. Autonomous driving until it finds the yellow color.
+2. User controls with joystick to pick up an object. Pressing the joystick start button indicates the object has been picked up.
+3. Autonomous driving until it finds the purple color.
+4. User controls with joystick to put down the picked up object. Pressing the joystick start button ends the program.
+During operation, it can be remotely controlled via MQTT mode. When a stop command is received remotely, it enters MQTT control mode for external control. Pressing start again exits MQTT mode and resumes the previous task.
+-----------------
+The log data includes information on the buttons pressed on the joystick, the left and right motors of the Jetank, servo motors, and battery.
+
+The logs are divided into system, command, servo, motor, and battery:
+
+System: Status information on what the AGV is doing and completion notices
+Command: External commands, either from the joystick or MQTT (if joystick is not indicated, it's an MQTT command) 
+Example system log: "2024:11:25:14:25:13;[system];Entering joystick control mode 1"
+Example command log: "2024:11:25:14:25:18;[command];Joystick move: Forward"
+
+Servo: Information on the servo motors
+Motor: Information on the left and right motors
+Battery: Battery information
+
+Motor data format:
+"time;[motor];left motor, right motor";
+Motor values range from -1.0 to 1.0, positive for forward, negative for reverse.
+Example motor log:
+"2024:11:25:14:24:39;[motor];0.175,0.425"
+
+Servo motor data format:
+
+"time;[servo];servo1,servo2,servo3,servo4,servo5"
+All values are integers.
+Servo1: -78 to 78, Camera pan. Negative left, positive right
+Servo2: 78 to -79, second joint, up/down. Higher positive moves down, lower negative moves up
+Servo3: -78 to 79, third joint, up/down. Higher positive moves up, lower negative moves down
+Servo4: 0 to -75, gripper hand. 0 fully open, more negative closes the hand
+Servo5: 70 to -61, camera tilt, up/down. Higher positive tilts down, lower negative tilts up
+*Allow for occasional 1 degree variations during movement
+Example servo log:
+"2024:11:25:14:26:24;[servo];73,77,20,-66,15"
+
+Battery info indicated by [battery], shows a real number value as a percentage of 100% maximum charge. The voltage sensor may have measurement errors causing the battery value to occasionally increase, but the overall average will decrease with operation. Take this into account when reporting the battery value.
+Example battery log:
+"2024:11:25:14:26:24;[servo];90.6"
+
+Analyze all this log data and provide a summary in English in 3 sentences or less.
