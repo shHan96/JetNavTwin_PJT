@@ -1,0 +1,58 @@
+cmake_minimum_required(VERSION 3.10)
+project(road_following)
+
+# C++14 표준 설정
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# OpenCV 설정
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+# 경로 설정
+set(TORCH_PATH "/usr/local/lib/python3.6/dist-packages/torch")
+set(CUDA_PATH "/usr/local/cuda-10.0")
+set(MQTT_PATH "/usr/local")
+
+# Include 디렉토리 설정
+include_directories(
+    ${TORCH_PATH}/include
+    ${TORCH_PATH}/include/torch/csrc/api/include
+    ${PROJECT_SOURCE_DIR}/include
+    ${MQTT_PATH}/include
+    ${CUDA_PATH}/targets/aarch64-linux/include
+)
+
+# 라이브러리 경로 추가
+link_directories(
+    ${TORCH_PATH}/lib
+    ${MQTT_PATH}/lib
+    ${CUDA_PATH}/targets/aarch64-linux/lib
+)
+
+# 소스 파일 목록
+file(GLOB_RECURSE SOURCES "src/*.cpp")
+
+# 실행 파일 생성
+add_executable(road_following ${SOURCES})
+
+# 라이브러리 링크
+target_link_libraries(road_following
+    ${OpenCV_LIBS}
+    torch
+    c10
+    pthread
+    paho-mqtt3c
+    paho-mqtt3a
+    paho-mqttpp3
+)
+
+# rpath 설정
+set_target_properties(road_following PROPERTIES
+    BUILD_WITH_INSTALL_RPATH TRUE
+    INSTALL_RPATH "${TORCH_PATH}/lib:${CMAKE_INSTALL_PREFIX}/lib"
+    LINK_FLAGS "-Wl,-rpath-link=${CUDA_PATH}/targets/aarch64-linux/lib -Wl,-rpath-link=${MQTT_PATH}/lib"
+)
+
+# 최적화 옵션 설정
+target_compile_options(road_following PRIVATE -O3)

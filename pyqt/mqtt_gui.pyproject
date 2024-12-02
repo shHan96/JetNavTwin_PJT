@@ -1,0 +1,13 @@
+{
+    "files": [
+        "mainwindow.py",
+        "form.ui",
+        "ui_form.py",
+        "ssafy-pjt-firestore-keys.json",
+        "Base64ImageProcessor.py",
+        "FirebaseManager.py",
+        "OpenAIManager.py",
+        "AWSManager.py",
+        "ws_test.py"
+    ]
+}
